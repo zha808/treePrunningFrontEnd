@@ -1,92 +1,67 @@
 <template>
-  <div class="login">
-    <h2>Tree Pruning</h2>
-    <form @submit.prevent="handleLogin">
-      <div>
-        <label for="username">Usuario:</label>
-        <input id="username" v-model="username" type="text" required />
-      </div>
-      <div>
-        <label for="password">Contraseña:</label>
-        <input id="password" v-model="password" type="password" required />
-      </div>
-      <button type="submit">Entrar</button>
-    </form>
-    <p v-if="error" class="error">{{ error }}</p>
+  <div>
+    <img src="../assets/arbol.png" alt="Tree Prunning Logo" width="200" />
   </div>
+  <div>
+    <form @submit.prevent="login">
+      <h2>Inicio de sesion</h2>
+      <input v-model="username" placeholder="Nombre de usuario" required />
+      <input v-model="password" type="password" placeholder="Contraseña" required />
+      <button type="submit">Enviar</button>
+    </form>
+  </div>
+
 </template>
 
 <script setup>
-defineOptions({ name: 'UserLogin' })
 import { ref } from 'vue'
-const emit = defineEmits(['login-success'])
 
 const username = ref('')
 const password = ref('')
-const error = ref('')
 
-function handleLogin() {
-  if (username.value === '' || password.value === '') {
-    error.value = 'Por favor, completa todos los campos.'
-    return
+function login() {
+  // Dummy login logic
+  if (username.value && password.value) {
+    // In real app, validate credentials
+    emit('login-success')
+  } else {
+    alert('Invalid credentials')
   }
-  // Aquí iría la lógica real de autenticación
-  error.value = ''
-  emit('login-success')
 }
+
+const emit = defineEmits(['login-success'])
 </script>
 
 <style scoped>
-.login {
-  max-width: 350px;
-  margin: 40px auto;
-  padding: 24px;
-  border: 1px solid #222;
-  border-radius: 8px;
-  background: #111;
-  color: #fff;
+div img {
+  display: flex;
+  margin: 20px auto;
+  border-radius: 50%;
 }
-.login h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #fff;
+form {
+  max-width: 320px;
+  margin: 100px auto;
+  padding: 32px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background: #F5F5F5;
 }
-.login label {
+input {
+  margin-top: 10px;
   display: block;
-  margin-bottom: 6px;
-  color: #fff;
-}
-.login input {
   width: 100%;
+  border-radius: 10px;
   padding: 8px;
-  margin-bottom: 14px;
-  border: 1px solid #444;
-  border-radius: 4px;
-  background: #222;
-  color: #fff;
+  margin-bottom: 16px;
 }
-.login input:focus {
-  outline: none;
-  border-color: #42b983;
-}
-.login button {
+button {
   width: 100%;
   padding: 10px;
-  background: #222;
-  color: #42b983;
-  border: 1px solid #42b983;
+  background: #2c3e50;
+  color: #fff;
+  border: none;
   border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.login button:hover {
-  background: #42b983;
-  color: #111;
-}
-.login .error {
-  color: #ff5252;
-  margin-top: 10px;
-  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
 }
 </style>
