@@ -57,7 +57,7 @@ function search() {
 
 <style scoped>
 .central-menu {
-  max-width: 400px;
+  max-width: 70%;
   margin: 0 auto;
   padding: 24px;
   background: #fff;

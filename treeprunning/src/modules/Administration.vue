@@ -25,15 +25,16 @@ h1 {
   border-bottom: 2px solid #eee;
 }
 .admin-container {
-  display: flex;
   flex-direction: column;
-min-height: 80vh;
+  min-height: 80vh;
 }
 .results-section {
-  margin-top: 0;
-  width: 100%;
+  margin: 1% auto;
+  width: 70%;
   padding: 24px;
   background: #f9f9f9;
   border-top: 1px solid #eee;
+  border-radius: 10px;
+
 }
 </style>

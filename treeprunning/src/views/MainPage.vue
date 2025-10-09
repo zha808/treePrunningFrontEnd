@@ -27,6 +27,7 @@ const currentModuleComponent = computed(() => modules[currentModule.value])
 
 <style scoped>
 .main-layout {
+  min-width: 100%;
   display: flex;
   height: 100vh;
 }
