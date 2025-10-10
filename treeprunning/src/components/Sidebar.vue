@@ -1,36 +1,29 @@
 <script setup>
 import { useRouter } from 'vue-router'
-const props = defineProps({
-  selected: String
-})
-const modules = ['Administration', 'PruningManagement', 'PQR', 'Statistics']
+
 const router = useRouter()
 
-function logout() {
-  // Add your logout logic here (e.g., clear tokens, etc.)
-  router.push('/login')
-}
 </script>
 
 <template>
-  <nav class="sidebar">
-    <ul>
-      <li class="logo">
-        <router-link to="/main">
-          <img src="@/assets/main_icon.png" alt="Tree Prunning Logo" width="150" />
-        </router-link>
+    <div class="bg-dark text-white p-3" style="width: 250px; height: 100vh;">
+    <h5 class="mb-4">Mi App</h5>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <router-link class="nav-link text-white" to="/administration">Administracion</router-link>
       </li>
-      <li
-        v-for="module in modules"
-        :key="module"
-        :class="{ active: selected === module }"
-        @click="$emit('navigate', module)"
-      >
-        {{ module }}
+      <li class="nav-item">
+        <router-link class="nav-link text-white" to="/pruning">Podas</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link text-white" to="/pqr">PQR</router-link>
+      </li>
+      <li class="nav-item">
+        <router-link class="nav-link text-white" to="/statistics">Informes</router-link>
       </li>
     </ul>
-    <button class="logout-btn" @click="logout">Cerrar sesion</button>
-  </nav>
+  </div>
+
 </template>
 
 <style scoped>
