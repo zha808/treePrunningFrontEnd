@@ -1,94 +1,68 @@
 <script setup>
 import { useRouter } from 'vue-router'
-const props = defineProps({
+
+defineProps({
+  show: Boolean,
   selected: String
 })
+
+const emit = defineEmits(['navigate'])
+
 const modules = ['Administration', 'PruningManagement', 'PQR', 'Statistics']
 const router = useRouter()
 
 function logout() {
-  // Add your logout logic here (e.g., clear tokens, etc.)
+  // Aquí va tu lógica de logout (limpiar token, etc.)
   router.push('/login')
 }
 </script>
 
 <template>
-  <nav class="sidebar">
-    <ul>
-      <li class="logo">
-        <router-link to="/main">
-          <img src="@/assets/main_icon.png" alt="Tree Prunning Logo" width="150" />
-        </router-link>
-      </li>
+
+  <div class="d-flex flex-column bg-dark text-white p-3" :class="['sidebar', { 'd-none': !show }]" style="width: 250px;">
+    <!-- Logo -->
+
+    <div class="text-center mb-4">
+      <router-link to="/main">
+        <img
+          src="@/assets/main_icon.png"
+          alt="Tree Prunning Logo"
+          class="img-fluid rounded-3 mb-2"
+          style="max-width: 120px;"
+        />
+      </router-link>
+    </div>
+    <!-- Navegación -->
+    <ul class="nav nav-pills mb-auto flex-column d-grip gap-2 ">
       <li
         v-for="module in modules"
         :key="module"
-        :class="{ active: selected === module }"
-        @click="$emit('navigate', module)"
+        class="nav-item"
       >
-        {{ module }}
+        <button
+          :class="[
+            'nav-link text-white fw-bold',
+            selected === module ? 'btn bg-success w-100' : ' btn bg-secondary w-100'
+          ]"
+          @click="emit('navigate', module)"
+        >
+          {{ module }}
+        </button>
       </li>
     </ul>
-    <button class="logout-btn" @click="logout">Cerrar sesion</button>
-  </nav>
+
+    <!-- Botón de cierre de sesión -->
+    <div class="mt-auto">
+      <button class="btn btn-danger w-100 fw-bold" @click="logout">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
 </template>
 
 <style scoped>
 .sidebar {
-  width: 220px;
-  background: #2c3e50;
-  color: #fff;
-  padding: 24px 0;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-.sidebar ul {
-  list-style: none;
-  padding: 0;
-}
-.sidebar li {
-  padding: 16px 24px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.sidebar li.logo {
-  padding: 0 24px 24px 24px;
-  text-align: center;
-  cursor: default;
-}
-.sidebar li.logo img {
-  width: 100px;
-  height: 100px;
-  object-fit: contain;
-  border-radius: 10%;
-  transition: transform 0.3s ease;
-}
-.sidebar li.logo img:hover {
-  transform: scale(1.05);
-}
-.sidebar li:hover:not(.logo) {
-  background: #34495e;
-}
-.sidebar li.active {
-  background: #1abc9c;
-  color: #fff;
-  font-weight: bold;
-}
-.logout-btn {
-  margin: 24px;
-  padding: 12px 0;
-  width: calc(100% - 48px);
-  background: #b81f0e;
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-.logout-btn:hover {
-  background: #e02c18;
+  height: 96%;
+  transition: all 0.3s ease;
 }
 </style>
