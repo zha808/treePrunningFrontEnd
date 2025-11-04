@@ -1,66 +1,25 @@
 <script setup>
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, onMounted } from 'vue'
 import MapModal from '../components/MapModal.vue'
+import { findAllTypes } from '../services/typeAPI.js'
+import { findAllStatus } from '../services/statusAPI.js'
 
 const attributes = [
-  'id',
-  'estado',
-  'fechaPlaneado',
-  'fechaEjecutado',
-  'arbol',
-  'cuadrilla',
-  'tipo',
+  'Estado',
+  'FechaPlaneado',
+  'Arbol',
+  'Cuadrilla',
+  'Tipo',
   'PQR',
-  'programacion',
-  'registroFotografico',
-  'observaciones'
+  'Programacion'
 ]
+
+const types = ref([]);
+const typeSelected = ref('');
+
+const loading = ref(true);
 
 const columns = ref([...attributes])
-
-// Mock pruning data
-const data = ref([
-  {
-    id: 1,
-    estado: 'Planeada',
-    fechaPlaneado: '2025-11-10',
-    fechaEjecutado: '',
-    arbol: 'Araucaria heterophylla',
-    cuadrilla: 'Cuadrilla A',
-    tipo: 'Poda ligera',
-    PQR: 'PQR-001',
-    programacion: 'Prog-2025-11',
-    registroFotografico: 'https://example.com/photo1.jpg',
-    observaciones: 'Acceso por calle lateral'
-  },
-  {
-    id: 2,
-    estado: 'Ejecutada',
-    fechaPlaneado: '2025-09-02',
-    fechaEjecutado: '2025-09-03',
-    arbol: 'Prunus serotine',
-    cuadrilla: 'Cuadrilla B',
-    tipo: 'Poda estructural',
-    PQR: 'PQR-023',
-    programacion: 'Prog-2025-09',
-    registroFotografico: 'https://example.com/photo2.jpg',
-    observaciones: 'Corte aplicado en ramas secas'
-  }
-])
-
-// Local tree list (use same data as Administration Arbol mock)
-const treeList = [
-  { id: 1, Longitud: -75.382563, Latitud: 6.145493, Especie: 'Araucaria heterophylla', Sector: 'El porvenir comuna 4 villa manuela-Rionegro-Antioquia-Colombia' },
-  { id: 2, Longitud: -75.382687, Latitud: 6.145493, Especie: 'Syzygium paniculata', Sector: 'El porvenir comuna 4 villa manuela-Rionegro-Antioquia-Colombia' },
-  { id: 3, Longitud: -75.382467, Latitud: 6.145503, Especie: 'Archontophoenix cunninghamiana', Sector: 'El porvenir comuna 4 villa manuela-Rionegro-Antioquia-Colombia' },
-  { id: 4, Longitud: -75.375115, Latitud: 6.148721, Especie: 'Inga sp', Sector: 'El centro comuna 3 avenida galan-Rionegro-Antioquia-Colombia' },
-  { id: 5, Longitud: -75.375177, Latitud: 6.148722, Especie: 'Handroanthus chrysanthus', Sector: 'El centro comuna 3 avenida galan-Rionegro-Antioquia-Colombia' },
-  { id: 6, Longitud: -75.375353, Latitud: 6.148725, Especie: 'Prunus serotine', Sector: 'El centro comuna 3 avenida galan-Rionegro-Antioquia-Colombia' },
-  { id: 7, Longitud: -75.383343, Latitud: 6.127223, Especie: 'Citrus spp', Sector: 'San Antonio comuna 1 san bartolo-Rionegro-Antioquia-Colombia' },
-  { id: 8, Longitud: -75.383347, Latitud: 6.127257, Especie: 'Persea americana', Sector: 'San Antonio comuna 1 san bartolo-Rionegro-Antioquia-Colombia' },
-  { id: 9, Longitud: -75.383295, Latitud: 6.127282, Especie: 'Acca sellowiana', Sector: 'San Antonio comuna 1 san bartolo-Rionegro-Antioquia-Colombia' },
-  { id: 10, Longitud: -75.374468, Latitud: 6.142899, Especie: 'Yucca gigantea', Sector: 'Santa ana comuna 2 altos de la Pereira-Rionegro-Antioquia-Colombia' }
-]
 
 // Editor modal
 const showEditor = ref(false)
@@ -74,12 +33,25 @@ watch(showEditor, (v) => {
   }
 })
 
+async function loadTypes() {
+  try {
+    const response = await findAllStatus();
+
+    types.value  = response.data;
+    console.log('Loaded types:', types.value);
+  } catch (error) {
+    console.error('Error loading statuses:', error);
+  } finally {
+    loading.value = false;
+  }
+}
+
 function openEditor(row) {
   if (row) {
-    originalIndex.value = data.value.findIndex(r => r.id === row.id)
-    const src = data.value[originalIndex.value] ?? row
+    //originalIndex.value = data.value.findIndex(r => r.id === row.id)
+    //const src = data.value[originalIndex.value] ?? row
     // copy values
-    for (const k of columns.value) editorRow[k] = src[k] ?? ''
+    //for (const k of columns.value) editorRow[k] = src[k] ?? ''
   } else {
     originalIndex.value = -1
     for (const k of columns.value) editorRow[k] = (k === 'id' ? null : '')
@@ -98,22 +70,15 @@ function saveEdit() {
 
   if (originalIndex.value >= 0) {
     // update
-    data.value[originalIndex.value] = { ...payload }
+    //data.value[originalIndex.value] = { ...payload }
   } else {
     // create new id
-    payload.id = (Math.max(0, ...data.value.map(d => d.id ?? 0)) + 1)
-    data.value.push(payload)
+    //payload.id = (Math.max(0, ...data.value.map(d => d.id ?? 0)) + 1)
+    //data.value.push(payload)
   }
   showEditor.value = false
 }
 
-function deleteRow(row) {
-  if (!row || !confirm('¿Confirma que desea borrar esta poda?')) return
-  const idx = data.value.findIndex(r => r.id === row.id)
-  if (idx >= 0) data.value.splice(idx, 1)
-}
-
-// simple field type inference
 function fieldType(col) {
   const lc = col.toLowerCase()
   if (lc.includes('fecha')) return 'date'
@@ -126,55 +91,32 @@ function fieldType(col) {
 const showTreeModal = ref(false)
 const treeModal = reactive({ id: null, species: '', sector: '', lat: null, lng: null })
 
-function extractSpeciesFromLabel(label) {
-  if (!label) return ''
-  const m = String(label).match(/\(([^)]+)\)/)
-  if (m && m[1]) return m[1].trim()
-  return String(label).trim()
-}
-
-function findTreeByLabel(label) {
-  const species = extractSpeciesFromLabel(label).toLowerCase()
-  // search exact or substring on Especie or Sector
-  return treeList.find(t =>
-    (t.Especie && t.Especie.toLowerCase().includes(species)) ||
-    (String(label).toLowerCase().includes((t.Especie ?? '').toLowerCase()))
-  ) ?? null
-}
-
-// Open tree detail modal for a pruning row
-function openTree(row) {
-  const label = row.arbol ?? row.Arbol ?? row.arbolNombre ?? ''
-  // first attempt: find by extracting species
-  let tree = findTreeByLabel(label)
-  // fallback: if label equals species name exactly
-  if (!tree) {
-    tree = treeList.find(t => String(t.Especie).toLowerCase() === String(label).toLowerCase())
-  }
-  if (!tree) {
-    alert('No se encontró información del árbol para: ' + label)
-    return
-  }
-
-  treeModal.id = tree.id
-  treeModal.species = tree.Especie
-  treeModal.sector = tree.Sector
-  treeModal.lat = Number(tree.Latitud)
-  treeModal.lng = Number(tree.Longitud)
-  showTreeModal.value = true
-}
 
 function closeTreeModal() {
   showTreeModal.value = false
 }
+
+onMounted(() => {
+  loadTypes();
+})
 </script>
 
 <template>
   <div class="container mt-4">
     <div class="d-flex align-items-center justify-content-between mb-3">
       <h4 class="m-0">Administración de podas</h4>
+      <div class="mb-3 d-flex align-items-center gap-3">
+        <div style="flex:1">
+          <label class="form-label">Tipos</label>
+          <select v-model="typeSelected" class="form-select">
+            <option value="" disabled selected hidden>Seleccione un tipo</option>
+            <option v-for="type in types" :key="type.id" :value="type.id">{{ type.name }}</option>
+          </select>
+        </div>
+      </div>
+
       <div>
-        <button class="btn btn-success me-2" @click="openEditor(null)">Crear poda</button>
+        <button class="btn btn-success me-2" @click="openEditor(null)">Programar poda</button>
       </div>
     </div>
 
@@ -200,9 +142,7 @@ function closeTreeModal() {
             <button class="btn btn-sm btn-danger" @click="deleteRow(row)">Borrar</button>
           </td>
         </tr>
-        <tr v-if="data.length === 0">
-          <td :colspan="columns.length + 1" class="text-center">No hay podas</td>
-        </tr>
+
       </tbody>
     </table>
 
@@ -210,7 +150,7 @@ function closeTreeModal() {
     <div v-if="showEditor" class="modal-backdrop">
       <div class="modal-card">
         <div class="modal-header d-flex justify-content-between align-items-center mb-2">
-          <h5 class="m-0">{{ originalIndex >= 0 ? 'Editar poda' : 'Crear poda' }}</h5>
+          <h5 class="m-0">{{ originalIndex >= 0 ? 'Editar poda' : 'Programar poda' }}</h5>
           <button class="btn-close" @click="closeEditor"></button>
         </div>
 
@@ -304,6 +244,7 @@ function closeTreeModal() {
   z-index: 1050;
   padding: 16px;
 }
+
 .modal-card {
   background: #fff;
   border-radius: 8px;

@@ -1,7 +1,6 @@
 <script setup>
 import { ref, watch, reactive, nextTick } from 'vue'
 import MapModal from '../components/MapModal.vue'
-import { findAllPersons } from '../services/personAPI.js'
 
 const entityList = [
   'Persona',
@@ -237,8 +236,6 @@ function openAllTrees() {
 <template>
   <div class="container mt-4">
     <h4 class="mb-3">Administración de información</h4>
-
-    <button @click="findAllPersons()">Obtener Personas</button>
 
     <!-- Selector de entidad y botón ver todos árboles -->
     <div class="mb-3 d-flex align-items-center gap-3">
