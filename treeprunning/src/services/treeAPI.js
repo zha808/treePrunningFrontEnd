@@ -3,7 +3,7 @@ import http from './httpClient';
 export async function findAllTrees() {
   try {
     const response = await http.get('/api/v1/trees');
-    console.log(response);
+    return response.data;
   } catch (error) {
     console.error('Error fetching trees:', error);
   }
@@ -12,7 +12,7 @@ export async function findAllTrees() {
 export async function findTreeById(treeId) {
   try {
     const response = await http.get(`/api/v1/trees/${treeId}`);
-    console.log(response);
+    return response.data;
   } catch (error) {
     console.error('Error fetching tree by ID:', error);
   }

@@ -2,8 +2,10 @@
   <div class="main-layout">
 
     <div class="">
-      <div class=" flex-grow-1">
-        <Navbar @toggleSidebar="toggleSidebar" />
+      <div>
+        <Sidebar
+
+        @navigate="handleNavigate"/>
         <div class="">
           <router-view />
         </div>
@@ -17,27 +19,35 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import Sidebar from '../components/Sidebar.vue'
-import Navbar from '../components/Navbar.vue'
-import Administration from '../modules/Administration.vue'
-import PruningManagement from '../modules/PruningManagement.vue'
-import PQR from '../modules/PQR.vue'
-import Statistics from '../modules/Statistics.vue'
+import Sidebar from '@/components/Sidebar.vue'
+//import Navbar from '../components/Navbar.vue'
+//import Administration from '../modules/Administration.vue'
+//import PruningManagement from '../modules/PruningManagement.vue'
+//import PQR from '../modules/PQR.vue'
+//import Statistics from '../modules/Statistics.vue'
+import SchedulePruning from '../modules/SchedulePruning.vue'
 
-const currentModule = ref('Administration')
+const currentModule = ref(null)
 const isSidebarVisible = ref(true)
-function toggleSidebar() {
-  isSidebarVisible.value = !isSidebarVisible.value
-}
 
+
+/*
 const modules = {
   Administration,
   PruningManagement,
   PQR,
   Statistics
+}*/
+
+const componentsMap = {
+  'SchedulePruning': SchedulePruning
 }
 
-const currentModuleComponent = computed(() => modules[currentModule.value])
+function handleNavigate(moduleName) {
+  currentModule.value = componentsMap[moduleName] || null
+}
+
+const currentModuleComponent = computed(() => componentsMap[currentModule.value])
 </script>
 
 <style scoped>

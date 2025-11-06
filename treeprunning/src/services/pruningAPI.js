@@ -20,7 +20,7 @@ export async function findPrunings() {
 
 export async function schedulePruning(pruningData) {
   try {
-    const response = await http.post('/api/v1/prunings', pruningData);
+    const response = await http.post('/api/v1/prunings/corrective', pruningData);
     return response.data;
   } catch (error) {
     console.error('Error creating pruning:', error);

@@ -5,13 +5,12 @@ import { findAllTypes } from '../services/typeAPI.js'
 import { findAllStatus } from '../services/statusAPI.js'
 
 const attributes = [
+  'Tipo',
   'Estado',
   'FechaPlaneado',
   'Arbol',
   'Cuadrilla',
-  'Tipo',
-  'PQR',
-  'Programacion'
+  'PQR'
 ]
 
 const types = ref([]);
