@@ -41,17 +41,22 @@ const attributes = [
 
 const correctivePruning = ref({
   status: {
-    id: null
+    id: null,
+    name: null
   },
   plannedDate: null,
   tree: {
     id: null
   },
   type: {
-    id: null
+    id: null,
+    name: null
   },
   pqr: {
-    id: null
+    id: null,
+    status: {
+        name: null
+      },
   },
   observations: ""
 });
@@ -67,23 +72,35 @@ async function schedulePruningfunction() {
 
   errors.value = {} // Reinicia errores
 
-  // Validación básica
+
+  if (!correctivePruning.value.type.id) {
+    errors.value.type = 'Debe seleccionar un tipo de poda.'
+  }
+  if (correctivePruning.value.type.name === 'Preventiva') {
+    errors.value.type = 'Debe seleccionar un tipo de poda correctiva.'
+  }
   if (!correctivePruning.value.plannedDate) {
     errors.value.plannedDate = 'Debe seleccionar una fecha.'
   }
-
   if (correctivePruning.value.plannedDate < new Date().toISOString().split('T')[0]) {
     errors.value.plannedDate = 'Debe seleccionar una fecha mayor o igual a la fecha actual.'
   }
   if (!correctivePruning.value.status.id) {
-    errors.value.status.id = 'Debe seleccionar un estado.'
+    errors.value.status = 'Debe seleccionar un estado.'
+  }
+  if (correctivePruning.value.status.name !== 'Abierta') {
+    errors.value.status = 'Debe seleccionar estado "Abierta".'
   }
   if (!correctivePruning.value.tree.id) {
-    errors.value.tree.id = 'Debe seleccionar un árbol.'
+    errors.value.tree = 'Debe seleccionar un árbol.'
   }
   if (!correctivePruning.value.pqr.id) {
-    errors.value.pqr.id = 'Debe seleccionar una PQR.'
+    errors.value.pqr = 'Debe seleccionar una PQR.'
   }
+  if (!correctivePruning.value.pqr.status.name !== 'Abierta') {
+    errors.value.pqr = 'Debe seleccionar una con estado "Abierta".'
+  }
+
 
   if (Object.keys(errors.value).length > 0) {
     return
@@ -110,7 +127,7 @@ function formatDate(value) {
     const date = new Date(value)
     const year = date.getFullYear()
     const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
+    const day = String(date.getDate())
     correctivePruning.value.plannedDate = `${year}-${month}-${day}`
   }
 }
@@ -127,6 +144,8 @@ function formatDate(value) {
         class="btn"
         :class="typeSelected === 'Correctiva' ? 'btn-success' : 'btn-outline-success'"
         @click="typeSelected = 'Correctiva'"
+
+
       >
         Correctiva
       </button>
@@ -153,7 +172,7 @@ function formatDate(value) {
             {{ type.name }}
           </option>
         </select>
-        <div v-if="errors.type" class="text-danger small">{{ errors.type.id }}</div>
+        <div v-if="errors.type" class="text-danger small">{{ errors.type }}</div>
       </div>
 
       <div class="mb-3">
@@ -173,7 +192,7 @@ function formatDate(value) {
             {{ status.name }}
           </option>
         </select>
-        <div v-if="errors.status" class="text-danger small">{{ errors.status.id }}</div>
+        <div v-if="errors.status" class="text-danger small">{{ errors.status }}</div>
       </div>
 
       <div class="mb-3">
@@ -184,10 +203,10 @@ function formatDate(value) {
             :key="tree.id"
             :value="tree.id"
           >
-            {{ tree.family.scientificName }} ({{ tree.family.commonName }}) - {{ tree.sector.name }}
+            {{ tree.family.scientificName }} - ({{ tree.family.commonName }}) - {{ tree.sector.name }}
           </option>
         </select>
-        <div v-if="errors.treeId" class="text-danger small">{{ errors.tree.id }}</div>
+        <div v-if="errors.tree" class="text-danger small">{{ errors.tree }}</div>
       </div>
 
       <div class="mb-3">
@@ -197,7 +216,7 @@ function formatDate(value) {
             {{ pqr.date }} - {{ pqr.sector.name }}
           </option>
         </select>
-        <div v-if="errors.pqrId" class="text-danger small">{{ errors.pqr.id }}</div>
+        <div v-if="errors.pqr" class="text-danger small">{{ errors.pqr }}</div>
       </div>
 
       <div class="mb-3">
