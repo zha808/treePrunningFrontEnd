@@ -23,7 +23,7 @@ import Sidebar from '@/components/Sidebar.vue'
 //import Navbar from '../components/Navbar.vue'
 //import Administration from '../modules/Administration.vue'
 //import PruningManagement from '../modules/PruningManagement.vue'
-//import PQR from '../modules/PQR.vue'
+import PQR from '../modules/PQR.vue'
 //import Statistics from '../modules/Statistics.vue'
 import SchedulePruning from '../modules/SchedulePruning.vue'
 

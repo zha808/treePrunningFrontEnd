@@ -77,7 +77,7 @@ async function schedulePruningfunction() {
     errors.value.type = 'Debe seleccionar un tipo de poda.'
   }
   if (correctivePruning.value.type.name === 'Preventiva') {
-    errors.value.type = 'Debe seleccionar un tipo de poda correctiva.'
+    errors.value.typeName = 'Debe seleccionar un tipo de poda correctiva.'
   }
   if (!correctivePruning.value.plannedDate) {
     errors.value.plannedDate = 'Debe seleccionar una fecha.'
@@ -88,8 +88,8 @@ async function schedulePruningfunction() {
   if (!correctivePruning.value.status.id) {
     errors.value.status = 'Debe seleccionar un estado.'
   }
-  if (correctivePruning.value.status.name !== 'Abierta') {
-    errors.value.status = 'Debe seleccionar estado "Abierta".'
+  if (correctivePruning.value.status.name === 'Cerrada') {
+    errors.value.statusName = 'Debe seleccionar estado "Abierto"'
   }
   if (!correctivePruning.value.tree.id) {
     errors.value.tree = 'Debe seleccionar un árbol.'
@@ -97,7 +97,7 @@ async function schedulePruningfunction() {
   if (!correctivePruning.value.pqr.id) {
     errors.value.pqr = 'Debe seleccionar una PQR.'
   }
-  if (!correctivePruning.value.pqr.status.name !== 'Abierta') {
+  if (!correctivePruning.value.pqr.status.name === 'Cerrada') {
     errors.value.pqr = 'Debe seleccionar una con estado "Abierta".'
   }
 
@@ -173,6 +173,7 @@ function formatDate(value) {
           </option>
         </select>
         <div v-if="errors.type" class="text-danger small">{{ errors.type }}</div>
+        <div v-if="errors.typeName" class="text-danger small">{{ errors.typeName }}</div>
       </div>
 
       <div class="mb-3">
@@ -193,6 +194,8 @@ function formatDate(value) {
           </option>
         </select>
         <div v-if="errors.status" class="text-danger small">{{ errors.status }}</div>
+        <div v-if="errors.statusName" class="text-danger small">{{ errors.statusName }}</div>
+
       </div>
 
       <div class="mb-3">
@@ -213,7 +216,7 @@ function formatDate(value) {
         <label for="pqr" class="form-label fw-semibold">PQR</label>
         <select id="pqr" v-model="correctivePruning.pqr.id" class="form-select">
           <option v-for="pqr in pqrs" :key="pqr.id" :value="pqr.id">
-            {{ pqr.date }} - {{ pqr.sector.name }}
+            {{ pqr.date }} - {{ pqr.sector.name }} - {{ pqr.status.name }}
           </option>
         </select>
         <div v-if="errors.pqr" class="text-danger small">{{ errors.pqr }}</div>

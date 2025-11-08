@@ -11,10 +11,10 @@ const openMenu = ref(null)
 const selected = ref(null)
 
 const modules = ref([
-  { name: 'Administration', submodules: []},
-  { name: 'PruningManagement', submodules: ['SchedulePruning']},
-  { name: 'PQR', submodules: []},
-  { name: 'Statistics', submodules: []}
+  { name: 'Administration', label: 'Administración', submodules: []},
+  { name: 'PruningManagement', label: 'Gestión de Poda', submodules: [{ name: 'SchedulePruning', label: 'Programar Poda' }]},
+  { name: 'PQR', label: 'PQR', submodules: [{ name: 'PQR', label: 'Generar PQR' }]},
+  { name: 'Statistics', label: 'Estadísticas', submodules: []}
 ])
 const router = useRouter()
 
@@ -24,6 +24,17 @@ function logout() {
 
 function toggleMenu(name) {
   openMenu.value = openMenu.value === name ? null : name
+  // marcar seleccionado cuando no hay submódulos y se quiere navegar por módulo
+  const module = modules.value.find(m => m.name === name)
+  if (module && (!module.submodules || module.submodules.length === 0)) {
+    selected.value = name
+    emit('navigate', name)
+  }
+}
+
+function onSubmoduleClick(subName) {
+  selected.value = subName
+  emit('navigate', subName)
 }
 </script>
 
@@ -55,8 +66,8 @@ function toggleMenu(name) {
           ]"
           @click="toggleMenu(module.name)"
         >
-          {{ module.name }}
-          <span class="float-end">
+          {{ module.label }}
+          <span class="float-end" v-if="module.submodules && module.submodules.length">
             <i :class="openMenu === module.name ? 'bi bi-chevron-up' : 'bi bi-chevron-down'"></i>
           </span>
         </button>
@@ -65,14 +76,14 @@ function toggleMenu(name) {
         class="nav flex-column ms-3 mt-2">
           <li
             v-for="submodule in module.submodules"
-            :key="submodule"
+            :key="submodule.name"
           >
             <button
               class="nav-link text-white fw-normal"
-              :class="selected === submodule ? 'btn bg-success w-100' : ' btn bg-secondary w-100'"
-              @click="emit('navigate', submodule)"
+              :class="selected === submodule.name ? 'btn bg-success w-100' : ' btn bg-secondary w-100'"
+              @click="onSubmoduleClick(submodule.name)"
             >
-              {{ submodule }}
+              {{ submodule.label }}
             </button>
           </li>
           </ul>
