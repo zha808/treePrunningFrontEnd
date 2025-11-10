@@ -12,7 +12,7 @@ const selected = ref(null)
 
 const modules = ref([
   { name: 'Administration', label: 'Administración', submodules: []},
-  { name: 'PruningManagement', label: 'Gestión de Poda', submodules: [{ name: 'SchedulePruning', label: 'Programar Poda' }]},
+  { name: 'PruningManagement', label: 'Gestión de Podas', submodules: [{ name: 'SchedulePruning', label: 'Programar Poda' }]},
   { name: 'PQR', label: 'PQR', submodules: [{ name: 'PQR', label: 'Generar PQR' }]},
   { name: 'Statistics', label: 'Estadísticas', submodules: []}
 ])

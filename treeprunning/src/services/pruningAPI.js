@@ -23,7 +23,8 @@ export async function schedulePruning(pruningData) {
     const response = await http.post('/api/v1/prunings/corrective', pruningData);
     return response.data;
   } catch (error) {
-    console.error('Error creating pruning:', error);
+    console.error('Error scheduling pruning:', error);
+    return error;
   }
 }
 
