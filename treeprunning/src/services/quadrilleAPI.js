@@ -14,7 +14,7 @@ export async function findAllQuadrilles() {
     const response = await http.get('/api/v1/quadrilles');
     return response.data;
   } catch (error) {
-    console.error('Error fetching quadrilles:', error);
+    return error;
   }
 }
 
